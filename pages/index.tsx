@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { useKeenSlider } from "keen-slider/react";
+import Head from "next/head";
 
 import { stripe } from "../lib/stripe";
 import { GetStaticProps } from "next";
-import Link from "next/link";
 
 import { HomeContainer, LinkProduct, Product } from "../styles/pages/home";
 
@@ -28,25 +28,31 @@ export default function Home({ products }: HomeProps) {
   });
 
   return (
-    <HomeContainer ref={sliderRef} className="keen-slider">
-      {products.map((product) => {
-        return (
-          <LinkProduct
-            key={product.id}
-            href={`/product/${product.id}`}
-            prefetch={false}
-          >
-            <Product className="keen-slider__slide">
-              <Image src={product.imageUrl} width={520} height={480} alt="" />
-              <footer>
-                <strong>{product.name}</strong>
-                <span>{product.price}</span>
-              </footer>
-            </Product>
-          </LinkProduct>
-        );
-      })}
-    </HomeContainer>
+    <>
+      <Head>
+        <title>Home | Ignite Shop</title>
+      </Head>
+
+      <HomeContainer ref={sliderRef} className="keen-slider">
+        {products.map((product) => {
+          return (
+            <LinkProduct
+              key={product.id}
+              href={`/product/${product.id}`}
+              prefetch={false}
+            >
+              <Product className="keen-slider__slide">
+                <Image src={product.imageUrl} width={520} height={480} alt="" />
+                <footer>
+                  <strong>{product.name}</strong>
+                  <span>{product.price}</span>
+                </footer>
+              </Product>
+            </LinkProduct>
+          );
+        })}
+      </HomeContainer>
+    </>
   );
 }
 

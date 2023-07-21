@@ -31,7 +31,7 @@ export const SuccessContainer = styled("main", {
     fontWeight: "bold",
 
     "&:hover": {
-      color: "$gree500",
+      color: "$green300",
     },
   },
 });
