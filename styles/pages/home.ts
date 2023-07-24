@@ -9,14 +9,9 @@ export const HomeContainer = styled("main", {
   minHeight: 656,
 });
 
-export const LinkProduct = styled(Link, {
-  color: "$gray100",
-});
-
 export const Product = styled("div", {
   background: "linear-gradient(100deg, #1ea483 0%, #7465d4 100%)",
   borderRadius: 8,
-  cursor: "pointer",
   position: "relative",
   overflow: "hidden",
 
@@ -47,14 +42,47 @@ export const Product = styled("div", {
     opacity: 0,
     transition: "all 0.2s ease-in-out",
 
-    strong: {
-      fontSize: "$lg",
+    div: {
+      display: "flex",
+      flexDirection: "column",
+
+      strong: {
+        fontSize: "$lg",
+        lineHeight: "2rem",
+      },
+
+      span: {
+        fontSize: "$xl",
+        fontWeight: "bold",
+        color: "$green300",
+      },
     },
 
-    span: {
-      fontSize: "$xl",
-      fontWeight: "bold",
-      color: "$green300",
+    a: {
+      padding: "0.75rem",
+      textAlign: "center",
+      position: "relative",
+      background: "$green500",
+      borderRadius: 6,
+      boxSizing: "border-box",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      border: 0,
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+
+      svg: {
+        color: "$white",
+      },
+
+      "&:hover": {
+        background: "$green300",
+
+        svg: {
+          color: "$gray100",
+        },
+      },
     },
   },
 
