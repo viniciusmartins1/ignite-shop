@@ -1,5 +1,6 @@
 import { Html, Head, Main, NextScript } from "next/document";
 import { getCssText } from "../styles";
+import logo from "../assets/logo.svg";
 
 export default function Document() {
   return (
@@ -19,6 +20,12 @@ export default function Document() {
         <style
           id="stitches"
           dangerouslySetInnerHTML={{ __html: getCssText() }}
+        />
+
+        <link
+          rel="shortcut icon"
+          href="/logo.svg"
+          type="image/x-icon"
         />
       </Head>
       <body>
