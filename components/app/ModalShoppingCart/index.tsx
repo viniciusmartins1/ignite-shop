@@ -9,16 +9,11 @@ export default function ModalShoppingCart() {
   const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
     useState(false);
   const [totalCart, setTotalCart] = useState<string>("");
-  const {
-    openModalCart,
-    productList,
-    removeProductFromChart,
-    toggleModalCart,
-  } = useContext(ShoppingCartContext);
+  const cxt = useContext(ShoppingCartContext);
 
   useEffect(() => {
-    if (productList.length) {
-      const total = productList.reduce(
+    if (cxt.productList.length) {
+      const total = cxt.productList.reduce(
         (price: number, item) => price + item.price,
         0
       );
@@ -29,17 +24,22 @@ export default function ModalShoppingCart() {
 
       setTotalCart(totalFormatted);
     }
-  }, [productList]);
+  }, [cxt.productList]);
 
-  // console.log(o)
   async function handleBuyProduct() {
     try {
       setIsCreatingCheckoutSession(true);
+
+      const priceIdList = cxt.productList.map(
+        (product) => product.defaultPriceId
+      );
+
       const response = await axios.post("/api/checkout", {
-        // priceId: product.defaultPriceId,
+        priceIdList,
       });
 
       const { checkoutUrl } = response.data;
+      cxt.clearProductsFromCart();
 
       window.location.href = checkoutUrl;
     } catch (err) {
@@ -50,11 +50,11 @@ export default function ModalShoppingCart() {
   }
 
   return (
-    <s.ModalChart modalIsOpen={openModalCart}>
-      <X size={24} weight="bold" onClick={toggleModalCart} />
+    <s.ModalChart modalIsOpen={cxt.openModalCart}>
+      <X size={24} weight="bold" onClick={cxt.toggleModalCart} />
       <h3>Sacola de compras</h3>
       <s.ProductItems>
-        {productList.map((product) => (
+        {cxt.productList.map((product) => (
           <li key={product.id}>
             <div>
               <Image src={product.imageUrl} alt="" width={80} height={80} />
@@ -62,7 +62,7 @@ export default function ModalShoppingCart() {
             <div>
               <p>{product.name}</p>
               <strong>{product.priceFormatted}</strong>
-              <button onClick={() => removeProductFromChart(product.id)}>
+              <button onClick={() => cxt.removeProductFromChart(product.id)}>
                 Remover
               </button>
             </div>
@@ -72,14 +72,17 @@ export default function ModalShoppingCart() {
       <s.PaymmentContainer>
         <s.QuantityDetails>
           <p>Quantidade</p>
-          <span>{`${productList.length} itens`}</span>
+          <span>{`${cxt.productList.length} itens`}</span>
         </s.QuantityDetails>
         <s.TotalDetails>
           <span>Valor total</span>
           <p>{totalCart}</p>
         </s.TotalDetails>
       </s.PaymmentContainer>
-      <s.CheckoutButton onClick={handleBuyProduct}>
+      <s.CheckoutButton
+        onClick={handleBuyProduct}
+        disabled={isCreatingCheckoutSession}
+      >
         Finalizar compra
       </s.CheckoutButton>
     </s.ModalChart>

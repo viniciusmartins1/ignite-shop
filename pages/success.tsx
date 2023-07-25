@@ -9,13 +9,13 @@ import Head from "next/head";
 
 interface SuccessProps {
   customerName: string;
-  product: {
+  products: {
     name: string;
     imageUrl: string;
-  };
+  }[];
 }
 
-export default function Success({ customerName, product }: SuccessProps) {
+export default function Success({ customerName, products }: SuccessProps) {
   return (
     <>
       <Head>
@@ -24,15 +24,24 @@ export default function Success({ customerName, product }: SuccessProps) {
         <meta name="robots" content="noindex" />
       </Head>
       <SuccessContainer>
-        <h1>Compra efetuada</h1>
+        <div>
+          {products.map((product, index) => {
+            return (
+              <ImageContainer
+                key={product.name}
+                imagePosition={index === 0 ? "first" : "other"}
+              >
+                <Image src={product.imageUrl} alt="" height={110} width={128} />
+              </ImageContainer>
+            );
+          })}
+        </div>
 
-        <ImageContainer>
-          <Image src={product.imageUrl} alt="" height={110} width={128} />
-        </ImageContainer>
+        <h1>Compra efetuada!</h1>
 
         <p>
-          Uhuu! <strong>{customerName}</strong>, sua{" "}
-          <strong>{product.name}</strong> já está a caminho da sua casa.
+          Uhuu! <strong>{customerName}</strong>, sua compra de {products.length}{" "}
+          camiseta(s) já está a caminho da sua casa.
         </p>
 
         <Link href="/">Voltar ao catálogo</Link>
@@ -57,15 +66,18 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   });
 
   const customerName = session.customer_details.name;
-  const product = session.line_items.data[0].price.product as Stripe.Product;
+  const productList = session.line_items.data;
 
   return {
     props: {
       customerName,
-      product: {
-        name: product.name,
-        imageUrl: product.images[0],
-      },
+      products: productList.map(({ price }) => {
+        const product = price.product as Stripe.Product;
+        return {
+          name: product.name,
+          imageUrl: product.images[0],
+        };
+      }),
     },
   };
 };
