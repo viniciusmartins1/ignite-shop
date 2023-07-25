@@ -6,6 +6,7 @@ interface Product {
   priceFormatted: string;
   price: number;
   imageUrl: string;
+  defaultPriceId: string;
 }
 
 interface ShoppingCartContextProps {
@@ -14,6 +15,7 @@ interface ShoppingCartContextProps {
   addProductToChart: (value: Product) => void;
   removeProductFromChart: (productId: string) => void;
   toggleModalCart: () => void;
+  clearProductsFromCart: () => void;
 }
 
 export const ShoppingCartContext = createContext(
@@ -49,6 +51,10 @@ export function ShoppingCartContextProvider({
     });
   }
 
+  function clearProductsFromCart() {
+    setProductList([]);
+  }
+
   function toggleModalCart() {
     setModalCart((state) => (state === "false" ? "true" : "false"));
   }
@@ -61,6 +67,7 @@ export function ShoppingCartContextProvider({
         addProductToChart,
         removeProductFromChart,
         toggleModalCart,
+        clearProductsFromCart,
       }}
     >
       {children}

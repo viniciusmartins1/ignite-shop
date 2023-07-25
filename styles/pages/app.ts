@@ -8,5 +8,5 @@ export const Container = styled("div", {
   minHeight: "100vh",
   position: "relative",
   overflow: "hidden",
+  marginBottom: "1.5rem",
 });
-

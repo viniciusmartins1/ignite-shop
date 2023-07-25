@@ -44,6 +44,7 @@ export default function Product({ product }: ProductProps) {
       name: product.name,
       price: product.price,
       priceFormatted: product.priceFormatted,
+      defaultPriceId: product.defaultPriceId,
     });
   }
 

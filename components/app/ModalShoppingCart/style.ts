@@ -115,7 +115,12 @@ export const CheckoutButton = styled("button", {
   cursor: "pointer",
   marginTop: "3.4rem",
 
-  "&:hover": {
+  "&:disabled": {
+    opacity: 0.6,
+    cursor: "not-allowed",
+  },
+
+  "&:not(:disabled):hover  ": {
     backgroundColor: "$green300",
   },
 });
