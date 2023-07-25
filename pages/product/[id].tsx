@@ -1,46 +1,50 @@
-import {
-  ImageContainer,
-  ProductContainer,
-  ProductDetails,
-} from "../../styles/pages/product";
+import * as s from "../../styles/pages/product";
 import Image from "next/image";
 import { stripe } from "../../lib/stripe";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Stripe from "stripe";
-import axios from "axios";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Head from "next/head";
+import { ShoppingCartContext } from "../../context/ShoppingCartContext";
 
 interface ProductProps {
   product: {
     id: string;
     name: string;
     imageUrl: string;
-    price: string;
+    price: number;
+    priceFormatted: string;
     description: string;
     defaultPriceId: string;
   };
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
-    useState(false);
+  const { addProductToChart, productList } = useContext(ShoppingCartContext);
+  const [disabledButton, setDisabledButton] = useState<boolean>(false);
 
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSession(true);
-      const response = await axios.post("/api/checkout", {
-        priceId: product.defaultPriceId,
-      });
+  useEffect(() => {
+    if (productList.length) {
+      const productIndex = productList.findIndex(
+        (item) => item.id === product.id
+      );
 
-      const { checkoutUrl } = response.data;
-
-      window.location.href = checkoutUrl;
-    } catch (err) {
-      //Conectar com uma ferramenta de observabilidade (Datadog / Sentry)
-      setIsCreatingCheckoutSession(false);
-      alert("Falha ao redirecionar ao checkout");
+      if (productIndex != -1) {
+        setDisabledButton(true);
+      }
+    } else {
+      setDisabledButton(false);
     }
+  }, [productList]);
+
+  function handleAddProductToCart() {
+    addProductToChart({
+      id: product.id,
+      imageUrl: product.imageUrl,
+      name: product.name,
+      price: product.price,
+      priceFormatted: product.priceFormatted,
+    });
   }
 
   return (
@@ -49,24 +53,21 @@ export default function Product({ product }: ProductProps) {
         <title>{product.name} | Ignite Shop</title>
       </Head>
 
-      <ProductContainer>
-        <ImageContainer>
+      <s.ProductContainer>
+        <s.ImageContainer>
           <Image src={product.imageUrl} alt="" width={520} height={480} />
-        </ImageContainer>
-        <ProductDetails>
+        </s.ImageContainer>
+        <s.ProductDetails>
           <h1>{product.name}</h1>
-          <span>{product.price}</span>
+          <span>{product.priceFormatted}</span>
 
           <p>{product.description}</p>
 
-          <button
-            onClick={handleBuyProduct}
-            disabled={isCreatingCheckoutSession}
-          >
+          <button onClick={handleAddProductToCart} disabled={disabledButton}>
             Colocar na sacola
           </button>
-        </ProductDetails>
-      </ProductContainer>
+        </s.ProductDetails>
+      </s.ProductContainer>
     </>
   );
 }
@@ -99,10 +100,11 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({
         id: product.id,
         name: product.name,
         imageUrl: product.images[0],
-        price: new Intl.NumberFormat("pt-BR", {
+        priceFormatted: new Intl.NumberFormat("pt-BR", {
           style: "currency",
           currency: "BRL",
         }).format(price.unit_amount / 100),
+        price: price.unit_amount,
         description: product.description,
         defaultPriceId: price.id,
       },
