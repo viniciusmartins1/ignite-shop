@@ -47,7 +47,7 @@ Projeto prático desenvolvido durante o programa Ignite (modulo 3) da [Rocketsea
 
 #
 
-### Checkout 
+### Checkout
 
 - Adição de um ou mais produtos na sacola;
 - Finalizar compra;
@@ -58,6 +58,6 @@ Projeto prático desenvolvido durante o programa Ignite (modulo 3) da [Rocketsea
 
 <div align="center">
 
-![Detalhes da issue](https://github.com/viniciusmartins1/ignite-shop/blob/main/assets/readme/post_page.gif)
+![Detalhes da issue](https://github.com/viniciusmartins1/ignite-shop/blob/main/assets/readme/checkout.gif)
 
 </div>
